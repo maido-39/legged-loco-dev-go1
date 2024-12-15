@@ -15,7 +15,7 @@ This repo is used to train low-level locomotion policy of Unitree Go2 and H1 in 
     conda activate isaaclab
     ```
 
-2. Make sure that Isaac Sim is installed on your machine. Otherwise follow [this guideline](https://docs.omniverse.nvidia.com/isaacsim/latest/installation/install_workstation.html) to install it. On Ubuntu 22.04 or higher, you could install it via pip:
+2. Make sure that Isaac Sim is installed on your machine. Otherwise follow [this guideline](https://docs.omniverse.nvidia.com/isaacsim/latest/installation/install_workstation.html) to install it. If installing via the Omniverse Launcher, please ensure that Isaac Sim 4.1.0 is selected and installed. On Ubuntu 22.04 or higher, you could install it via pip:
     ```shell
     pip install isaacsim-rl==4.1.0 isaacsim-replicator==4.1.0 isaacsim-extscache-physics==4.1.0 isaacsim-extscache-kit-sdk==4.1.0 isaacsim-extscache-kit==4.1.0 isaacsim-app==4.1.0 --extra-index-url https://pypi.nvidia.com
     ```
@@ -25,9 +25,11 @@ This repo is used to train low-level locomotion policy of Unitree Go2 and H1 in 
     pip install torch==2.2.2 --index-url https://download.pytorch.org/whl/cu121
     ```
 
-4. Clone the Isaac Lab repository, and link extensions.
+4. Clone the Isaac Lab repository, and link extensions. 
+
+    **Note**: This codebase was tested with Isaac Lab 1.1.0 and may not be compatible with newer versions. Please make sure to use the modified version of Isaac Lab provided below, which includes important bug fixes and updates. As Isaac Lab is under active development, we will consider supporting newer versions in the future.
     ```shell
-    git clone git@github.com:h1-navigation/IsaacLab.git
+    git clone git@github.com:yang-zj1026/IsaacLab.git
     cd IsaacLab
     cd source/extensions
     ln -s {THIS_REPO_DIR}/isaaclab_exts/omni.isaac.leggedloco .
@@ -61,4 +63,4 @@ This repo is used to train low-level locomotion policy of Unitree Go2 and H1 in 
     Use `--headless` to enable headless mode. Add `--enable_cameras --video` for headless rendering and video saving.
 
 ## Add New Environments
-You can add additional environments by placing them in the `isaaclab_exts/omni.isaac.leggedloco/omni/isaac/leggedloco/config` directory
+You can add additional environments by placing them under `isaaclab_exts/omni.isaac.leggedloco/omni/isaac/leggedloco/config`.
