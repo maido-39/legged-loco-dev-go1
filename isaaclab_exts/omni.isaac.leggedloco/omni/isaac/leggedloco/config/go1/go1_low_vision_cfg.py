@@ -47,6 +47,7 @@ class Go1VisionRoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
         actor_hidden_dims=[512, 256, 128],
         critic_hidden_dims=[512, 256, 128],
         activation="elu",
+        # obs_depth_shape=(24, 32),
     )
     algorithm = RslRlPpoAlgorithmCfg(
         value_loss_coef=1.0,

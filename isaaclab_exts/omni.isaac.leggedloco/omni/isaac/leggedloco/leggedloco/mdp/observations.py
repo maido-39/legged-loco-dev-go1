@@ -97,7 +97,7 @@ def process_depth_image(env: BaseEnv, sensor_cfg: SceneEntityCfg, data_type: str
     # depth_image_size = (output.shape[2], output.shape[3])
     # output_clone = output.clone().reshape(env.num_envs, depth_image_size[0], depth_image_size[1])[0,:,:]
     # window_name = "Before clipping"
-    # import ipdb; ipdb.set_trace()
+    # # import ipdb; ipdb.set_trace()
     # cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
     # cv2.imshow(window_name, output_clone.cpu().numpy())
     # cv2.waitKey(1)
