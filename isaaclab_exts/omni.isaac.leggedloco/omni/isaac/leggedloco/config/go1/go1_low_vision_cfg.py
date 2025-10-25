@@ -217,7 +217,11 @@ class CustomGo1RewardsCfg(RewardsCfg):
     feet_air_time = RewTerm(
         func=mdp.feet_air_time,
         weight=0.25,
-        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_foot")},
+        params={
+            "command_name": "base_velocity",
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_foot"),
+            "threshold": 0.4,
+        },
     )
     # feet_stumble = RewTerm(
     #     func=mdp.feet_stumble,
