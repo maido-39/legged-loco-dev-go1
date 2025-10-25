@@ -195,24 +195,28 @@ class Go1SceneCfg(InteractiveSceneCfg):
 ##
 @configclass 
 class CustomGo1RewardsCfg(RewardsCfg):
-    # Hip 관절에 강한 제약 추가 (3발 보행 방지)
-    hip_deviation = RewTerm(
-        func=mdp.joint_deviation_l1,
-        weight=-0.4,
-        params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*_hip_joint"])},
-    )
-    # 다른 관절들에 약한 제약
+    # Hip 관절 제약을 완화하거나 제거 (동적 보행을 위해)
+    # hip_deviation = RewTerm(
+    #     func=mdp.joint_deviation_l1,
+    #     weight=-0.4,
+    #     params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*_hip_joint"])},
+    # )
+    
+    # 다른 관절들에 약한 제약 (너무 극단적인 자세 방지)
     joint_deviation = RewTerm(
         func=mdp.joint_deviation_l1,
-        weight=-0.04,
+        weight=-0.02,  # 가중치 완화
         params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*_thigh_joint", ".*_calf_joint"])},
     )
-    # 기본 높이 제약 추가
-    base_height = RewTerm(
-        func=mdp.base_height_l2,
-        weight=-5.0,
-        params={"target_height": 0.25},
-    )
+    
+    # base_height 제약 완전 제거 (rough terrain에서는 절대 높이 제약이 부적절)
+    # 로봇이 지형에 맞춰 높이를 자유롭게 조절할 수 있도록 함
+    # base_height = RewTerm(
+    #     func=mdp.base_height_l2,
+    #     weight=-0.005,
+    #     params={"target_height": 0.3},
+    # )
+    
     # 발 공중 시간 보상 추가 (보행 리듬 유도)
     feet_air_time = RewTerm(
         func=mdp.feet_air_time,
@@ -468,16 +472,21 @@ class Go1VisionRoughEnvCfg(ManagerBasedRLEnvCfg):
         }
 
         # rewards
-        self.rewards.feet_air_time.params["sensor_cfg"].body_names = ".*_foot"
-        self.rewards.feet_air_time.weight = 0.25  # 보행 리듬 보상 강화
+        # feet_air_time 설정은 이미 CustomGo1RewardsCfg에서 정의됨
         self.rewards.undesired_contacts = None
+        
+        # Isaac Lab 기본 보상 가중치 설정
         self.rewards.dof_torques_l2.weight = -0.0002
         self.rewards.track_lin_vel_xy_exp.weight = 1.5
         self.rewards.track_ang_vel_z_exp.weight = 0.75
         self.rewards.dof_acc_l2.weight = -2.5e-7
-        # 몸통 안정성 보상 (원본에서도 0.0으로 비활성화)
         self.rewards.flat_orientation_l2.weight = 0.0
-        # self.rewards.dof_pos_limits.weight = -0.0002
+        
+        # 추가 기본 보상들 (Isaac Lab 기본값)
+        self.rewards.lin_vel_z_l2.weight = -2.0      # 수직 속도 제한
+        self.rewards.ang_vel_xy_l2.weight = -0.05   # 롤/피치 각속도 제한
+        self.rewards.action_rate_l2.weight = -0.01  # 액션 변화율 제한
+        self.rewards.dof_pos_limits.weight = 0.0     # 관절 위치 제한 (비활성화)
 
         # Commands
         self.commands.base_velocity.ranges.lin_vel_x = (0.0, 1.0)
